@@ -1,0 +1,66 @@
+@import './base.css';
+@import '@vueform/vueform/dist/vueform.css';
+
+#app {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+strong {
+  font-weight: bold;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+.opp-wrapper h2 {
+  color: black;
+}
+
+.button {
+  margin-top: 10px;
+  padding: 5px 0px;
+  border-radius: 5px;
+  background-color: lightgrey;
+  font-weight: bold;
+  text-align: center;
+  max-width: 150px;
+}
+
+.modal {
+  background-color: var(--color-background);
+}
+
+@media (prefers-color-scheme: dark) {
+  .opp-wrapper h2 {
+    color: white;
+  }
+  .button {
+    background-color: white;
+  }
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  /* #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  } */
+}
