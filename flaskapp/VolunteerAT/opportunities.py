@@ -221,9 +221,17 @@ def get_opportunity(id):
 @bp.route('/api/update/<int:id>', methods=['POST'])
 @admin_required
 def update(id):
-    # TODO make sure permission
     try:
         with get_db() as cursor:
+            cursor.execute(
+                """SELECT owner
+                    FROM opportunities
+                    WHERE id = %(id)s""",
+                { 'id': id }
+            )
+            owner = cursor.fetchone()[0]
+            if not g.user['admin'] and g.user['id'] != owner:
+                return { 'error': 'User does not have permission' }, 400
             cursor.execute(
                 """UPDATE opportunities
                     SET
@@ -302,7 +310,9 @@ def opportunity_object(id):
         'just_show_up': opp[16] == 1
     }
 
+
 @bp.route('/', defaults={'path': ''})
 @bp.route('/<path:path>')
 def index(path):
+    '''Serves the single page app.'''
     return render_template('opportunities/index.html')
