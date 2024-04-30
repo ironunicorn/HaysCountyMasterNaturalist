@@ -19,6 +19,15 @@ bp = Blueprint('opportunities', __name__)
 
 
 def get_opportunities():
+    '''Gets all active opportunities plus those that have occured in the last
+    45 days.
+
+    Includes recurring opportunities and anytime opportunities that either don't
+    have and expiration_date or have one that is greater than the current date.
+
+    Returns:
+        opportunities(arr): An array of opportunity dicts.
+    '''
     opportunities = []
     with get_db() as cursor:
         cursor.execute(
@@ -73,6 +82,8 @@ def get_opportunities():
 
 
 def convert_to_local_time(opp, day=None, original_hour=None):
+    '''Converts opp(dict)'s event_start, event_end, and expiration_date from utc
+    to YYYY-MM-DD HH:mm local time.'''
     if opp.get('expiration_date'):
         opp['expiration_date'] = opp['expiration_date'].astimezone(central).strftime('%Y-%m-%d %H:%M')
     if opp.get('event_start'):
@@ -87,6 +98,17 @@ def convert_to_local_time(opp, day=None, original_hour=None):
 
 
 def find_recurring(opportunities):
+    '''Adds all opportunity recurrences to opportunities array.
+
+    Parameters:
+    opportunities (arr): a list of opportunity dicts with expiration_date,
+        event_start, event_end, recurring_weekly, and recurring_monthly
+
+    Returns:
+    all_opportunities (arr): a list of opportunity dicts that inlcudes all
+        occurences of recurring events from 45 days back to 3 months in the
+        future.
+    '''
     # TODO refactor maybe at some point.
     all_opportunities = []
     now = datetime.now(tz=utc)
@@ -130,13 +152,14 @@ def find_recurring(opportunities):
     return all_opportunities
 
 def clean_city(city):
+    '''Capitalizes each letter in city(str)'''
     if city:
         return city.title()
     else:
         return None
 
 def clean_date(dt):
-    # deal with am/pm input and convert to utc datetime object
+    '''Deals with am/pm input and converts to utc datetime object'''
     if dt:
         pm = "pm" in dt
         dt = dt[:-3]
@@ -149,9 +172,36 @@ def clean_date(dt):
         return None
 
 
+def get_opportunity(id):
+    '''Fetches opportunity from database by id.'''
+    opportunity = None
+    with get_db() as cursor:
+        cursor.execute(
+            """SELECT id, owner, title, body, anywhere, anytime, location, city,
+                        event_start,
+                        event_end,
+                        expiration_date,
+                        category, project_id, recurring_weekly,
+                        recurring_monthly, link, just_show_up
+                FROM opportunities
+                WHERE id = %(id)s""",
+            {'id': id}
+        )
+        opportunity = cursor.fetchone()
+
+    if opportunity is None:
+        abort(404, f"Post id {id} doesn't exist.")
+
+    return opportunity
+
+
+def convert_to_readable_local(dt):
+    '''Converts UTC datetime to central YYYY-MM-DD HH:mm'''
+    return utc.localize(dt).astimezone(central).strftime('%Y-%m-%d %H:%M') if dt else None
+
+
 @bp.route('/api/opportunities')
 def list():
-    # returns json object
     return find_recurring(get_opportunities())
 
 
@@ -194,28 +244,6 @@ def create():
         except Exception as e:
             return { 'error': str(e) }, 400
     return { 'success': True }
-
-
-def get_opportunity(id):
-    opportunity = None
-    with get_db() as cursor:
-        cursor.execute(
-            """SELECT id, owner, title, body, anywhere, anytime, location, city,
-                        event_start,
-                        event_end,
-                        expiration_date,
-                        category, project_id, recurring_weekly,
-                        recurring_monthly, link, just_show_up
-                FROM opportunities
-                WHERE id = %(id)s""",
-            {'id': id}
-        )
-        opportunity = cursor.fetchone()
-
-    if opportunity is None:
-        abort(404, f"Post id {id} doesn't exist.")
-
-    return opportunity
 
 
 @bp.route('/api/update/<int:id>', methods=['POST'])
@@ -284,8 +312,6 @@ def update(id):
 #         cursor.execute('DELETE FROM post WHERE id = ?', (id,))
 #     return redirect(url_for('blog.index'))
 
-def convert_to_readable_local(dt):
-    return utc.localize(dt).astimezone(central).strftime('%Y-%m-%d %H:%M') if dt else None
 
 @bp.route('/api/opportunities/<int:id>')
 def opportunity_object(id):

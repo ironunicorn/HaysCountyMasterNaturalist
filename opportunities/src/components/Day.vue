@@ -13,7 +13,6 @@ const props = defineProps({
 const emit = defineEmits(['modalOpp'])
 
 
-
 function isEditor(admin, userId, opp) {
   return admin || opp.owner === userId
 }

@@ -18,6 +18,7 @@ def user():
         return { 'id': None }
 
 def get_user_by_email(email):
+    '''Search database for user by email address.'''
     user = None
     with get_db() as cursor:
         cursor.execute(
@@ -118,6 +119,8 @@ def logout():
 
 
 def admin_required(view):
+    '''Requires user be an admin or project_coordinator in order to access the
+    decorated endpoint.'''
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
