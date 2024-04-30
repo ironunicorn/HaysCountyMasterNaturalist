@@ -9,6 +9,18 @@ const props = defineProps({
   id: String
 })
 
+const AT_CATEGORIES = [
+  'Chapter Meeting-Hays County',
+  'Interactive Webinars',
+  'Lecture Series',
+  'Project Specific Training',
+  'Single Presentations & Interpretive Field Trips/Hikes',
+  'TMN Tuesday',
+  'TX Waters Certification Training',
+  'TxMN Annual Meeting',
+  'VMS Training',
+]
+
 const router = useRouter()
 
 const endpoint = ref(`${DOMAIN}/api/create`)
@@ -87,7 +99,9 @@ fetchUser()
             'p_category',
             'category',
             'p_project',
-            'project_id'
+            'project_id',
+            'at_category',
+            'at_category_p'
            ]"
            :labels="{
              next: 'Continue to Where',
@@ -192,13 +206,45 @@ fetchUser()
            name="p_project"
            content="Project ID"
            tag="p"
+           :conditions="[
+            [
+              'category',
+              'not_in',
+              [
+                'AT',
+                'EV',
+              ],
+            ],
+          ]"
          />
          <TextElement
            name="project_id"
-           :rules="[
-             {
-               'numeric': ['category', 'not in', 'AT,EV'],
-             }
+           rules="numeric|between:400,3000"
+           :conditions="[
+            [
+              'category',
+              'not_in',
+              [
+                'AT',
+                'EV',
+              ],
+            ],
+          ]"
+         />
+         <StaticElement
+           name="at_category_p"
+           content="AT Category"
+           tag="p"
+           :conditions="[
+             ['category', '==', 'AT']
+           ]"
+         />
+         <SelectElement
+           name="at_category"
+           :native="false"
+           :items="AT_CATEGORIES"
+           :conditions="[
+             ['category', '==', 'AT']
            ]"
          />
          <ToggleElement

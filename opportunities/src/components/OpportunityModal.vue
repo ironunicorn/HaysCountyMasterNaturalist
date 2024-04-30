@@ -22,7 +22,6 @@ function close() {
         <div style="font-weight:bold;">{{ formatDateDisplay(opp) }}</div>
         <div><i>{{ props.opp.anywhere ? 'Anywhere' : props.opp.location }}</i></div>
         <div v-if="props.opp.category === 'AT'"><b>AT: {{ props.opp.project_id }}</b></div>
-        <div v-else-if="props.opp.category === 'EV'"><b>{{ props.opp.project_id }}</b></div>
         <div v-else><b>{{ props.opp.project_id }} {{props.opp.category}}</b> ({{ getCategory(props.opp.category) }})</div>
         <div v-html="props.opp.body"></div>
         <div v-if="opp.just_show_up" class="green">No need to register. Just show up!</div>

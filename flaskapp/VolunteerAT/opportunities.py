@@ -4,7 +4,6 @@ from dateutil.relativedelta import relativedelta
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, send_from_directory
 )
-from flask_wtf.csrf import generate_csrf
 from pytz import timezone
 from werkzeug.exceptions import abort
 
@@ -18,10 +17,6 @@ central = timezone('US/Central')
 
 bp = Blueprint('opportunities', __name__)
 
-@bp.after_request
-def after_request_func(response):
-    response.set_cookie('csrf_token', generate_csrf())
-    return response
 
 def get_opportunities():
     opportunities = []
@@ -189,7 +184,7 @@ def create():
                     'event_end': clean_date(request.form.get('event_end')),
                     'expiration_date': clean_date(request.form.get('expiration_date')),
                     'category': request.form['category'],
-                    'project_id': request.form['project_id'],
+                    'project_id': request.form['at_category'] if request.form['category'] == 'AT' else request.form.get('project_id'),
                     'recurring_weekly': 1 if request.form.get('recurring_weekly') == 'true' else 0,
                     'recurring_monthly': request.form.get('recurring_monthly') or None,
                     'link': request.form.get('link') or None,
@@ -260,7 +255,7 @@ def update(id):
                     'event_end': clean_date(request.form.get('event_end')),
                     'expiration_date': clean_date(request.form.get('expiration_date')),
                     'category': request.form['category'],
-                    'project_id': request.form['project_id'],
+                    'project_id': request.form['at_category'] if request.form['category'] == 'AT' else request.form.get('project_id'),
                     'recurring_weekly': 1 if request.form.get('recurring_weekly') == 'true' else 0,
                     'recurring_monthly': request.form.get('recurring_monthly') or None,
                     'link': request.form.get('link') or None,

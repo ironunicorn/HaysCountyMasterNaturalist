@@ -11,6 +11,7 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
+
 def get_db():
     DATABASE_URL = os.environ.get('DATABASE_URL') or 'localhost'
     DATABASE_NAME = os.environ.get('DATABASE_NAME') or 'hcmn'
@@ -26,7 +27,6 @@ def get_db():
         )
 
     return g.db.cursor()
-
 
 
 def init_db():
@@ -73,12 +73,15 @@ def init_db():
         print(error)
 
 
-
 # console command: flask --app VolunteerAT init-db
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
-    init_db()
+    try:
+        init_db()
+    except Exception as error:
+        click.echo(error)
+        return
     click.echo('Initialized the database.')
 
 
