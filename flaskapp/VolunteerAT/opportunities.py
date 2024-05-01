@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, send_from_directory
+    Blueprint, g, redirect, render_template, request, url_for
 )
 from pytz import timezone
 from werkzeug.exceptions import abort
@@ -23,7 +23,7 @@ def get_opportunities():
     45 days.
 
     Includes recurring opportunities and anytime opportunities that either don't
-    have and expiration_date or have one that is greater than the current date.
+    have an expiration_date or have one that is greater than the current date.
 
     Returns:
         opportunities(arr): An array of opportunity dicts.

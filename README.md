@@ -7,6 +7,10 @@ cd opportunities
 ```
 
 ```sh
+npm install
+```
+
+```sh
 npm run build
 ```
 
@@ -37,7 +41,7 @@ flask --app VolunteerAT run
 ```
 
 ## To run flask app in production
-Be sure to set the following environmental variables:
+Be sure to set the following environment variables:
 - SECRET_KEY
 - DATABASE_URL
 - DATABASE_NAME

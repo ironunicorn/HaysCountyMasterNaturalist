@@ -2,7 +2,7 @@ import os
 
 import pymysql
 import click
-from flask import current_app, g
+from flask import g
 
 
 def close_db(e=None):
