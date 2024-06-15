@@ -17,6 +17,7 @@ def user():
     else:
         return { 'id': None }
 
+
 def get_user_by_email(email):
     '''Search database for user by email address.'''
     user = None
@@ -30,10 +31,12 @@ def get_user_by_email(email):
 
     return user
 
+
 def signin(user_id):
     session.clear()
     session['user_id'] = user_id
     return redirect(url_for('index'))
+
 
 @bp.route('/signup', methods=('GET', 'POST'))
 def signup():
@@ -119,6 +122,21 @@ def logout():
 
 
 def admin_required(view):
+    '''Requires user be an admin in order to access the
+    decorated endpoint.'''
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return {'error': 'login required'}, 400
+        if not g.user['admin']:
+            return {'error': 'access denied'}, 400
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def editor_required(view):
     '''Requires user be an admin or project_coordinator in order to access the
     decorated endpoint.'''
     @functools.wraps(view)
@@ -131,3 +149,63 @@ def admin_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@bp.route('/users')
+@admin_required
+def users():
+    users = []
+    with get_db() as cursor:
+        cursor.execute(
+            """SELECT
+                    id,
+                    email,
+                    admin,
+                    project_coordinator
+                FROM master_naturalist"""
+        )
+        db_users = cursor.fetchall()
+    for user in db_users:
+        users.append({
+            'id': user[0],
+            'email': user[1],
+            'admin': user[2] == 1,
+            'project_coordinator': user[3] == 1,
+        })
+
+    return users
+
+@bp.route('/users/update/<int:id>', methods=['POST'])
+@admin_required
+def update_user(id):
+    print('in update****************')
+    print(request.form)
+    with get_db() as cursor:
+        # cannot edit another admin's status
+        cursor.execute(
+            """SELECT admin
+                FROM master_naturalist
+                WHERE id = %(id)s""",
+            { 'id': id }
+        )
+        is_admin = cursor.fetchone()[0]
+        if is_admin == 1:
+            print('is admin')
+            return {'error': 'access denied'}, 400
+
+        # update desired user
+        print('trying to update.....')
+        cursor.execute(
+            """UPDATE master_naturalist
+                SET
+                    project_coordinator = %(project_coordinator)s,
+                    admin = %(admin)s
+                WHERE id = %(id)s""",
+            {
+                'id': id,
+                'project_coordinator': 1 if request.form.get('project_coordinator') == 'true' else 0,
+                'admin': 1 if request.form.get('admin') == 'true' else 0,
+            }
+        )
+        print('updated???')
+    return { 'success': True }

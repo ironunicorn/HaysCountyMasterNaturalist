@@ -7,7 +7,7 @@ from flask import (
 from pytz import timezone
 from werkzeug.exceptions import abort
 
-from VolunteerAT.auth import admin_required
+from VolunteerAT.auth import editor_required
 from VolunteerAT.db import get_db
 
 
@@ -206,7 +206,7 @@ def list():
 
 
 @bp.route('/api/create', methods=['POST'])
-@admin_required
+@editor_required
 def create():
     with get_db() as cursor:
         try:
@@ -247,7 +247,7 @@ def create():
 
 
 @bp.route('/api/update/<int:id>', methods=['POST'])
-@admin_required
+@editor_required
 def update(id):
     try:
         with get_db() as cursor:
@@ -305,7 +305,7 @@ def update(id):
 
 #
 # @bp.route('/<int:id>/delete', methods=('POST',))
-# @admin_required
+# @editor_required
 # def delete(id):
 #     get_opportunity(id)
 #     with get_db() as cursor:
