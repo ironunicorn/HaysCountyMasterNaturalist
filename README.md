@@ -11,12 +11,10 @@ npm install
 ```
 
 ```sh
-npm run build
+npm run dev
 ```
 
-Add generated .js and .css filenames to flaskapp/VolunteerAT/templates/opportunities/index.html and .css filename to flaskapp/VolunteerAT/templates/base.html
-
-At some point I might automate this and make it less painful for development.
+Run the flask app:
 
 ## To run flask app locally
 - Be sure you have MySQL installed and running.
@@ -33,6 +31,10 @@ pip install -r requirements.txt
 ```
 
 ```sh
+export DEV=1
+```
+
+```sh
 flask --app VolunteerAT init-db
 ```
 
@@ -41,6 +43,15 @@ flask --app VolunteerAT run
 ```
 
 ## To run flask app in production
+
+First, build the vue app:
+
+```sh
+npm run build
+```
+
+Add generated .js and .css filenames to flaskapp/VolunteerAT/templates/opportunities/index.html
+
 Be sure to set the following environment variables:
 - SECRET_KEY
 - DATABASE_URL
