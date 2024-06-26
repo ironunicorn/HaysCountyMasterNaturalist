@@ -1,4 +1,5 @@
 <script setup>
+import axios from 'axios'
 import moment from 'moment'
 import { ref, watch } from 'vue'
 
@@ -124,8 +125,8 @@ function openModal(opp) {
 }
 
 async function fetchOpportunities() {
-  const res = await fetch(DOMAIN.concat(`/api/opportunities`))
-  opportunities.value = await res.json()
+  const res = await axios.get(DOMAIN.concat(`/api/opportunities`))
+  opportunities.value = await res.data
 
   cities.value = new Set(opportunities.value.map((opp) => opp.city || 'Anywhere'))
   categories.value = new Set(opportunities.value.map((opp) => getCategory(opp.category)))
@@ -135,8 +136,8 @@ async function fetchOpportunities() {
 }
 
 async function fetchUser() {
-  const res = await fetch(DOMAIN.concat(`/auth/user`))
-  user.value = await res.json()
+  const res = await axios.get(DOMAIN.concat(`/auth/user`))
+  user.value = await res.data
 }
 
 watch(searchTitleAndBody, filterOpportunities)
@@ -158,8 +159,8 @@ fetchUser()
     </div>
     <div v-else>
       Project Coordinators:
-      <a href="/auth/signup">Sign up</a> |
-      <a href="/auth/login">Log in</a>
+      <RouterLink to="/signup">Sign Up</RouterLink> |
+      <a href="/login">Log in</a>
     </div>
   </div>
   <div class="everything">

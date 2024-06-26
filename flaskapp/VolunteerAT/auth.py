@@ -35,64 +35,58 @@ def get_user_by_email(email):
 def signin(user_id):
     session.clear()
     session['user_id'] = user_id
-    return redirect(url_for('index'))
+    return { 'success': True }
 
 
-@bp.route('/signup', methods=('GET', 'POST'))
+@bp.route('/signup', methods=['POST'])
 def signup():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    email = request.form['email']
+    password = request.form['password']
 
-        # hash and salt password.
-        hashed_password = bcrypt.hashpw(
-            password.encode('utf-8'),
-            bcrypt.gensalt()
-        )
-        error = None
+    # hash and salt password.
+    hashed_password = bcrypt.hashpw(
+        password.encode('utf-8'),
+        bcrypt.gensalt()
+    )
+    error = None
 
-        if not email:
-            error = 'Email is required.'
-        elif not password:
-            error = 'Password is required.'
+    if not email:
+        error = 'Email is required.'
+    elif not password:
+        error = 'Password is required.'
 
-        if error is None:
-            try:
-                with get_db() as cursor:
-                    cursor.execute(
-                        """INSERT INTO master_naturalist (email, password)
-                            VALUES (%(email)s, %(hashed_password)s)""",
-                        {'email': email, 'hashed_password': hashed_password}
-                    )
-            except:
-                error = f"Oops! Something went wrong. Please try again."
-            else:
-                user = get_user_by_email(email)
-                return signin(user[0])
-        flash(error)
-
-    return render_template('auth/signup.html')
-
-
-@bp.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password'].encode('utf-8')
-        error = None
-        user = get_user_by_email(email)
-        if user is None:
-            error = 'Incorrect email.'
-        # check hashed and salted password.
-        elif not bcrypt.checkpw(password, user[1]):
-            error = 'Incorrect password.'
-
-        if error is None:
+    if error is None:
+        try:
+            with get_db() as cursor:
+                cursor.execute(
+                    """INSERT INTO master_naturalist (email, password)
+                        VALUES (%(email)s, %(hashed_password)s)""",
+                    {'email': email, 'hashed_password': hashed_password}
+                )
+        except:
+            error = f"Oops! Something went wrong. Please try again."
+        else:
+            user = get_user_by_email(email)
             return signin(user[0])
+    return { 'error': error }
 
-        flash(error)
 
-    return render_template('auth/login.html')
+@bp.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password'].encode('utf-8')
+    error = None
+    user = get_user_by_email(email)
+    if user is None:
+        error = 'Incorrect email.'
+    # check hashed and salted password.
+    elif not bcrypt.checkpw(password, user[1]):
+        error = 'Incorrect password.'
+
+    if error is None:
+        return signin(user[0])
+
+    return { 'error': error }
 
 
 @bp.before_app_request
@@ -115,10 +109,10 @@ def load_logged_in_user():
                 g.user = {'id': user[0], 'email': user[1], 'admin': user[2], 'project_coordinator': user[3]}
 
 
-@bp.route('/logout')
+@bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return { 'success': True }
 
 
 def admin_required(view):

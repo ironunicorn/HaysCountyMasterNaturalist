@@ -1,7 +1,7 @@
 import os
 
-from flask import Flask
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask import Flask, request
+from flask_wtf.csrf import CSRFProtect, generate_csrf, CSRFError
 from . import auth, db, opportunities
 
 
@@ -20,8 +20,7 @@ except OSError:
     pass
 
 db.init_app(app)
-# Enable CSRF Protection.
-CSRFProtect(app)
+
 
 # add user authentication for project coordinators.
 app.register_blueprint(auth.bp)
@@ -30,11 +29,21 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(opportunities.bp)
 app.add_url_rule('/', endpoint='index')
 
+CSRFProtect(app)
 
 @app.after_request
 def after_request_func(response):
     '''Make csrf token available for vue app.'''
-    response.set_cookie('csrf_token', generate_csrf())
+    csrf_token = generate_csrf()
+    response.set_cookie('CSRF-TOKEN', csrf_token)
+    response.headers.add('CSRF-TOKEN', csrf_token)
+
+    if os.environ.get('DEV'):
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,X-CSRFToken,Cookie,Set-Cookie')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        response.headers.add('Access-Control-Expose-Headers', 'CSRF-TOKEN')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
 
     return response
 

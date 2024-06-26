@@ -1,4 +1,5 @@
 <script setup>
+import axios from 'axios'
 import { ref, watch } from 'vue'
 import { Validator } from '@vueform/vueform'
 import { useRouter } from 'vue-router'
@@ -54,17 +55,13 @@ function setEndpoint(id) {
 }
 
 async function fetchUser() {
-  const res = await fetch(DOMAIN.concat(`/auth/user`))
-  user.value = await res.json()
-  form$.value.update({
-    csrf_token: document.cookie.replace('csrf_token=', '')
-  })
+  const res = await axios.get(DOMAIN.concat(`/auth/user`))
+  user.value = await res.data
 }
 
 async function fetchOpportunity(id) {
-  const res = await fetch(DOMAIN.concat(`/api/opportunities/${id}`))
-  const data = await res.json()
-  data.csrf_token = document.cookie.replace('csrf_token=', '')
+  const res = await axios.get(DOMAIN.concat(`/api/opportunities/${id}`))
+  const data = await res.data
   form$.value.load(data, true)
 }
 
@@ -171,7 +168,6 @@ fetchUser()
       <FormElements>
 
         <HiddenElement name="owner" :value="user.admin && form$.owner ? form$.owner : user.id"/>
-        <HiddenElement name="csrf_token"/>
         <StaticElement
           name="p_title"
           content="Title"
