@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, request
-from flask_wtf.csrf import CSRFProtect, generate_csrf, CSRFError
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 from . import auth, db, opportunities
 
 
@@ -38,6 +38,7 @@ def after_request_func(response):
     response.set_cookie('CSRF-TOKEN', csrf_token)
     response.headers.add('CSRF-TOKEN', csrf_token)
 
+    # Allow separate frontend port for vue development.
     if os.environ.get('DEV'):
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,X-CSRFToken,Cookie,Set-Cookie')

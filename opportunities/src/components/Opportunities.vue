@@ -2,6 +2,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import Day from './Day.vue'
 import OpportunityModal from './OpportunityModal.vue'
@@ -20,6 +21,8 @@ const filteredOpportunities = ref({})
 const user = ref({})
 const days = ref([])
 const openOpp = ref({})
+
+const router = useRouter()
 
 
 function addRemoveCategory(e, category) {
@@ -124,6 +127,15 @@ function openModal(opp) {
   openOpp.value = opp
 }
 
+function logout() {
+  // TODO: Test this!!!
+  const res = await axios.post(DOMAIN.concat(`/auth/logout`))
+  if (res.data.success) {
+    success.value = true
+    router.push('/')
+  }
+}
+
 async function fetchOpportunities() {
   const res = await axios.get(DOMAIN.concat(`/api/opportunities`))
   opportunities.value = await res.data
@@ -155,12 +167,12 @@ fetchUser()
       <RouterLink v-if="user.admin || user.project_coordinator" to="/new">Create Opportunity</RouterLink>
       <a v-else href="https://docs.google.com/forms/d/e/1FAIpQLSf0j6GQVsDAo0UZswqfXhGRk7l5HcoEhqOvnsmudf5KhiDLrA/viewform?usp=sf_link">Request Editing Access</a>
       <span> | </span>
-      <a href="/auth/logout">Logout</a>
+      <a href="#" @click.stop.prevent="logout">Logout</a>
     </div>
     <div v-else>
       Project Coordinators:
       <RouterLink to="/signup">Sign Up</RouterLink> |
-      <a href="/login">Log in</a>
+      <RouterLink to="/login">Log in</RouterLink>
     </div>
   </div>
   <div class="everything">

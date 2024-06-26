@@ -172,8 +172,6 @@ def users():
 @bp.route('/users/update/<int:id>', methods=['POST'])
 @admin_required
 def update_user(id):
-    print('in update****************')
-    print(request.form)
     with get_db() as cursor:
         # cannot edit another admin's status
         cursor.execute(
@@ -184,11 +182,9 @@ def update_user(id):
         )
         is_admin = cursor.fetchone()[0]
         if is_admin == 1:
-            print('is admin')
             return {'error': 'access denied'}, 400
 
         # update desired user
-        print('trying to update.....')
         cursor.execute(
             """UPDATE master_naturalist
                 SET
@@ -201,5 +197,5 @@ def update_user(id):
                 'admin': 1 if request.form.get('admin') == 'true' else 0,
             }
         )
-        print('updated???')
+
     return { 'success': True }
