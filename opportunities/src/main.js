@@ -13,17 +13,17 @@ import Auth from './components/Auth.vue'
 
 
 axios.defaults.withCredentials = true
-axios.interceptors.response.use(function (response) {
+axios.defaults.headers.common['X-CSRFToken'] = window.CSRF_TOKEN
+axios.interceptors.response.use((response) => {
   axios.defaults.headers.common['X-CSRFToken'] = response.headers['csrf-token']
-  console.log(response.headers['csrf-token'])
 
   return response
 })
 
 const routes = [
   { path: '/', component: Opportunities },
-  { path: '/signup', component: Auth, props: { endpoint: 'signup'} },
-  { path: '/login', component: Auth, props: { endpoint: 'login'} },
+  { path: '/signup', component: Auth, props: { endpoint: 'signup', title: 'Sign Up' } },
+  { path: '/login', component: Auth, props: { endpoint: 'login', title: 'Log In' } },
   { path: '/new', component: OpportunityForm, props: {id: ''} },
   { path: '/:id', component: OpportunityForm, props: true },
 ]

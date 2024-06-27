@@ -127,12 +127,10 @@ function openModal(opp) {
   openOpp.value = opp
 }
 
-function logout() {
-  // TODO: Test this!!!
+async function logout() {
   const res = await axios.post(DOMAIN.concat(`/auth/logout`))
   if (res.data.success) {
-    success.value = true
-    router.push('/')
+    router.go(0)
   }
 }
 
