@@ -4,23 +4,11 @@ import { ref, watch } from 'vue'
 import { Validator } from '@vueform/vueform'
 import { useRouter } from 'vue-router'
 
-import { CATEGORY_CODES, DOMAIN } from '../utils.js'
+import { AT_CATEGORIES, CATEGORY_CODES, CITIES, DOMAIN } from '../utils.js'
 
 const props = defineProps({
   id: String
 })
-
-const AT_CATEGORIES = [
-  'Chapter Meeting-Hays County',
-  'Interactive Webinars',
-  'Lecture Series',
-  'Project Specific Training',
-  'Single Presentations & Interpretive Field Trips/Hikes',
-  'TMN Tuesday',
-  'TX Waters Certification Training',
-  'TxMN Annual Meeting',
-  'VMS Training',
-]
 
 const router = useRouter()
 
@@ -256,7 +244,7 @@ fetchUser()
          />
          <StaticElement
            name="p_location"
-           content="Address or Crossroads. Please include the city here, too!"
+           content="Address or Crossroads."
            tag="p"
            :conditions="[
             [
@@ -302,13 +290,10 @@ fetchUser()
             ],
           ]"
          />
-         <TextElement
+         <SelectElement
            name="city"
-           :rules="[
-             {
-               required: ['anywhere', '!=', true]
-             }
-           ]"
+           :native="false"
+           :items="CITIES"
            :conditions="[
             [
               'anywhere',

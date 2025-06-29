@@ -12,6 +12,38 @@ export const CATEGORY_CODES = {
   'EV': 'Event',
 }
 
+export const CITIES = [
+  "Austin", 
+  "Buda",
+  "Canyon Lake",
+  "Driftwood",
+  "Dripping Springs", 
+  "Georgetown",
+  "Johnson City", 
+  "Kyle",
+  "Lockhart",
+  "Manchaca",
+  "Marble Falls",
+  "New Braunfels",
+  "Round Mountain",
+  "San Antonio",      
+  "San Marcos",          
+  "Wimberley",   
+  "Other", 
+]
+
+export const AT_CATEGORIES = [
+  'Chapter Meeting-Hays County',
+  'Interactive Webinars',
+  'Lecture Series',
+  'Project Specific Training',
+  'Single Presentations & Interpretive Field Trips/Hikes',
+  'TMN Tuesday',
+  'TX Waters Certification Training',
+  'TxMN Annual Meeting',
+  'VMS Training',
+]
+
 function formatDateTime(unformattedDt) {
   const dt = moment(unformattedDt)
   return dt.format('LT') === '12:00 AM' ?
