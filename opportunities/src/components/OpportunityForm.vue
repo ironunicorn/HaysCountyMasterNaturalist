@@ -548,8 +548,10 @@ fetchUser()
      </FormElements>
      <FormStepsControls />
      <div class="help">
-       <a href="https://docs.google.com/document/d/1zqQsXDq8cU7HPE-stWppD7BPM8NVLXM18IK7-XABtmE/edit?usp=sharing">Help</a>
+       <a href="https://docs.google.com/document/d/1zqQsXDq8cU7HPE-stWppD7BPM8NVLXM18IK7-XABtmE/edit?usp=sharing">Help</a> | 
+       <RouterLink to="/">Exit</RouterLink>
      </div>
+      
      </template>
   </Vueform>
  </template>
@@ -558,6 +560,7 @@ fetchUser()
   .opportunity-form {
     width: 600px;
     max-width: 100%;
+    margin: auto;
   }
   .error {
     color: red;
