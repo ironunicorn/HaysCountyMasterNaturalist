@@ -97,7 +97,7 @@ function groupByDay(opps) {
 function getAllDays() {
   let day = moment()
   day = day.subtract(45, 'days')
-  for (let i = 0; i < 135; i++) {
+  for (let i = 0; i < (181 + 45); i++) {
     if (i === 45) days.value.push(ANY_TIME)
     days.value.push(getReadableDate(day))
     day = day.add(1, 'days')
