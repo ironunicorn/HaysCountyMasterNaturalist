@@ -50,11 +50,28 @@ function formatDateTime(unformattedDt) {
     '' : dt.format('LT')
 }
 
+
+
 export function formatDateDisplay(opp) {
   if (opp.anytime) {
     return 'Anytime'
   } else {
     const time = formatDateTime(opp.event_start)
+    return opp.event_end ? time.concat(' - ', moment(opp.event_end).format('LT')) : time
+  }
+}
+
+function formatModalDateTime(unformattedDt) {
+  const dt = moment(unformattedDt)
+  return dt.format('LT') === '12:00 AM' ?
+    dt.format("dddd, MMMM Do") : dt.format("dddd, MMMM Do, h:mm:ss a")
+}
+
+export function formatModalDateDisplay(opp) {
+  if (opp.anytime) {
+    return 'Anytime'
+  } else {
+    const time = formatModalDateTime(opp.event_start)
     return opp.event_end ? time.concat(' - ', moment(opp.event_end).format('LT')) : time
   }
 }

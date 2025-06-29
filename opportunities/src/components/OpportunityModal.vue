@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-import { getCategory, formatDateDisplay } from '../utils.js'
+import { getCategory, formatModalDateDisplay } from '../utils.js'
 
 const props = defineProps({
   opp: Object
@@ -16,11 +16,14 @@ const emit = defineEmits(['closeModal'])
       <span class="close" @click="emit('closeModal')">&times;</span>
       <div class="opp-wrapper">
         <h2>{{ props.opp.title }}</h2>
-        <div style="font-weight:bold;">{{ formatDateDisplay(opp) }}</div>
-        <div><i>{{ props.opp.anywhere ? 'Anywhere' : props.opp.location }}</i></div>
-        <div v-if="props.opp.city"><i>{{ props.opp.city }}</i></div>
-        <div v-if="props.opp.category === 'AT'"><b>AT: {{ props.opp.project_id }}</b></div>
-        <div v-else><b>{{ props.opp.project_id }} {{props.opp.category}}</b> ({{ getCategory(props.opp.category) }})</div>
+        <br/>
+        <div><span style="font-weight:bold;">When:</span> {{ formatModalDateDisplay(opp) }}</div>
+        <div><span style="font-weight:bold;">Where:</span> {{ props.opp.anywhere ? 'Anywhere' : props.opp.location }}</div>
+        <div v-if="props.opp.city">{{ props.opp.city }}</div>
+        <div><span style="font-weight:bold;">VMS Code:</span> 
+        <span v-if="props.opp.category === 'AT'"><b>AT: {{ props.opp.project_id }}</b></span>
+        <span v-else><b>{{ props.opp.project_id }} {{props.opp.category}}</b> ({{ getCategory(props.opp.category) }})</span></div>
+        <br/>
         <div v-html="props.opp.body"></div>
         <div v-if="opp.just_show_up" class="green">No need to register. Just show up!</div>
         <a v-if="opp.link" :href="opp.link" target="_blank"><div class="button">{{ ['AT', 'EV'].includes(opp.category) ? 'More Information' : 'VOLUNTEER' }}</div></a>
