@@ -3,6 +3,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import Vueform from '@vueform/vueform'
 import vueformConfig from './../vueform.config'
+import { createVfm } from 'vue-final-modal'
 import { createWebHistory, createRouter } from 'vue-router'
 import App from './App.vue'
 import axios from 'axios'
@@ -37,4 +38,8 @@ const app = createApp(App)
 
 app.use(Vueform, vueformConfig)
 app.use(router)
+
+const vfm = createVfm()
+app.use(vfm) // vue final modal registration
+
 app.mount('#app')

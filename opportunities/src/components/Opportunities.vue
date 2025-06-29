@@ -3,6 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { ModalsContainer, VueFinalModal } from 'vue-final-modal'
 
 import Day from './Day.vue'
 import OpportunityModal from './OpportunityModal.vue'
@@ -21,6 +22,7 @@ const filteredOpportunities = ref({})
 const user = ref({})
 const days = ref([])
 const openOpp = ref({})
+const openedOpp = ref(false)
 
 const router = useRouter()
 
@@ -125,6 +127,13 @@ function filterOpportunities() {
 
 function openModal(opp) {
   openOpp.value = opp
+  openedOpp.value = true
+
+}
+
+function closeModal(opp) {
+  openOpp.value = {}
+  openedOpp.value = false
 }
 
 async function logout() {
@@ -235,7 +244,10 @@ fetchUser()
       </div>
     </div>
   </div>
-  <OpportunityModal :opp="openOpp" />
+  <VueFinalModal v-model="openedOpp">
+    <OpportunityModal :opp="openOpp" @closeModal="closeModal" />
+  </VueFinalModal>
+  <ModalsContainer />
 </template>
 
 <style scoped>

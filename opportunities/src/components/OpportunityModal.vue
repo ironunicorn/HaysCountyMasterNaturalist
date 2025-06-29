@@ -7,16 +7,13 @@ const props = defineProps({
   opp: Object
 })
 
-function close() {
-  props.opp = {}
-}
-
+const emit = defineEmits(['closeModal'])
 </script>
 
 <template>
-  <div class="modal-container" v-if="props.opp.title">
-    <div class="modal">
-      <span class="close" @click="close">&times;</span>
+  <div class="modal-container">
+    <div class="modal-content modal">
+      <span class="close" @click="emit('closeModal')">&times;</span>
       <div class="opp-wrapper">
         <h2>{{ props.opp.title }}</h2>
         <div style="font-weight:bold;">{{ formatDateDisplay(opp) }}</div>
@@ -35,7 +32,6 @@ function close() {
   .modal-container {
     display: block; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
@@ -46,8 +42,7 @@ function close() {
     background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
   }
 
-  /* Modal Content */
-  .modal {
+  .modal-content {
     margin: auto;
     padding: 20px;
     border-radius: 5px;

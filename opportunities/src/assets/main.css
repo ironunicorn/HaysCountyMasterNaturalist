@@ -1,5 +1,6 @@
 @import './base.css';
 @import '@vueform/vueform/dist/vueform.css';
+@import 'vue-final-modal/style.css';
 
 #app {
   max-width: 1500px;
