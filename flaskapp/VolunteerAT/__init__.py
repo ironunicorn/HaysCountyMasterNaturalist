@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from . import auth, db, opportunities
+from . import auth, db, opportunities, users
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -28,6 +28,9 @@ app.register_blueprint(auth.bp)
 # add main page and opportunities API.
 app.register_blueprint(opportunities.bp)
 app.add_url_rule('/', endpoint='index')
+
+# add user management for admins.
+app.register_blueprint(users.bp)
 
 CSRFProtect(app)
 

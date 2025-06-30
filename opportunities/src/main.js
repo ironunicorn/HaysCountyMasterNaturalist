@@ -11,6 +11,7 @@ import axios from 'axios'
 import Opportunities from './components/Opportunities.vue'
 import OpportunityForm from './components/OpportunityForm.vue'
 import Auth from './components/Auth.vue'
+import Users from './components/Users.vue'
 
 
 axios.defaults.withCredentials = true
@@ -27,6 +28,7 @@ const routes = [
   { path: '/login', component: Auth, props: { endpoint: 'login', title: 'Log In' } },
   { path: '/new', component: OpportunityForm, props: {id: ''} },
   { path: '/:id', component: OpportunityForm, props: true },
+  { path: '/users', component: Users },
 ]
 
 const router = createRouter({

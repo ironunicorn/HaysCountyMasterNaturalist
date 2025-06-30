@@ -174,6 +174,8 @@ fetchUser()
       <RouterLink v-if="user.admin || user.project_coordinator" to="/new">Create Opportunity</RouterLink>
       <a v-else href="https://docs.google.com/forms/d/e/1FAIpQLSf0j6GQVsDAo0UZswqfXhGRk7l5HcoEhqOvnsmudf5KhiDLrA/viewform?usp=sf_link">Request Editing Access</a>
       <span> | </span>
+      <RouterLink v-if="user.admin" to="/users">Manage Users</RouterLink>
+      <span v-if="user.admin"> | </span>
       <a href="#" @click.stop.prevent="logout">Logout</a>
     </div>
     <div v-else>
