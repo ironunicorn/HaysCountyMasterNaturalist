@@ -4,7 +4,7 @@ import { ref, watch } from 'vue'
 import { Validator } from '@vueform/vueform'
 import { useRouter } from 'vue-router'
 
-import { AT_CATEGORIES, CATEGORY_CODES, CITIES, DOMAIN } from '../utils.js'
+import { AT_CATEGORIES, CATEGORY_CODES, CITIES, DOMAIN, findDefaultEndTime } from '../utils.js'
 
 const props = defineProps({
   id: String
@@ -19,6 +19,7 @@ const form$ = ref(null)
 const err = ref(null)
 const success = ref(false)
 const copy = ref(false)
+const defaultEndTime = ref('')
 
 
 function handleResponse(response) {
@@ -40,6 +41,19 @@ function duplicate() {
 
 function setEndpoint(id) {
   endpoint.value = `${DOMAIN}/api/update/${id}`
+}
+
+function updateEndTime(dt, oldValue, el$) {
+  const newEndTime = findDefaultEndTime(dt)
+  if (defaultEndTime.value === '' || 
+    defaultEndTime.value < newEndTime || 
+    defaultEndTime.value.slice(0, 10) !== newEndTime.slice(0, 10)) {
+      defaultEndTime.value = newEndTime
+      let eventEnd = el$.form$.el$('event_end')
+      eventEnd.clear()
+      eventEnd.update()
+  }
+  
 }
 
 async function fetchUser() {
@@ -351,6 +365,9 @@ fetchUser()
               required: ['anytime', '!=', true]
             }
           ]"
+          @change="(newValue, oldValue, el$) => {
+                updateEndTime(newValue, oldValue, el$)
+              }"
          />
          <StaticElement
            name="p_end"
@@ -377,6 +394,7 @@ fetchUser()
            :date="true"
            :time="true"
            :hour24="false"
+           :default="defaultEndTime"
            :conditions="[
             [
               'anytime',
@@ -550,8 +568,7 @@ fetchUser()
      <div class="help">
        <a href="https://docs.google.com/document/d/1zqQsXDq8cU7HPE-stWppD7BPM8NVLXM18IK7-XABtmE/edit?usp=sharing">Help</a> | 
        <RouterLink to="/">Exit</RouterLink>
-     </div>
-      
+     </div>  
      </template>
   </Vueform>
  </template>
