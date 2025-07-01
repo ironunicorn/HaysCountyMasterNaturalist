@@ -114,7 +114,7 @@ def find_recurring(opportunities):
     # TODO refactor maybe at some point.
     all_opportunities = []
     now = datetime.now(tz=utc)
-    three_months_out = now + relativedelta(months=3)
+    six_months_out = now + relativedelta(months=6)
     fortyfive_days_ago = now - timedelta(days=45)
     for opp in opportunities:
         expiration_date = None
@@ -126,7 +126,7 @@ def find_recurring(opportunities):
             original_hour = day.astimezone(central).hour
             while day < fortyfive_days_ago:
                 day += timedelta(days=7)
-            while day <= three_months_out and (not expiration_date or day <= expiration_date):
+            while day <= six_months_out and (not expiration_date or day <= expiration_date):
                 new_opp = opp.copy()
                 convert_to_local_time(new_opp, day, original_hour)
                 all_opportunities.append(new_opp)
@@ -138,7 +138,7 @@ def find_recurring(opportunities):
             at_least_date = (opp['recurring_monthly'] - 1) * 7
             while day < fortyfive_days_ago or day.day <= at_least_date:
                 day += timedelta(days=7)
-            while day <= three_months_out and (not expiration_date or day <= expiration_date):
+            while day <= six_months_out and (not expiration_date or day <= expiration_date):
                 new_opp = opp.copy()
                 convert_to_local_time(new_opp, day, original_hour)
                 all_opportunities.append(new_opp)
