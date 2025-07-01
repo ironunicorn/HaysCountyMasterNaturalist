@@ -43,17 +43,22 @@ function setEndpoint(id) {
   endpoint.value = `${DOMAIN}/api/update/${id}`
 }
 
-function updateEndTime(dt, oldValue, el$) {
-  const newEndTime = findDefaultEndTime(dt)
-  if (defaultEndTime.value === '' || 
-    defaultEndTime.value < newEndTime || 
-    defaultEndTime.value.slice(0, 10) !== newEndTime.slice(0, 10)) {
-      defaultEndTime.value = newEndTime
-      let eventEnd = el$.form$.el$('event_end')
-      eventEnd.clear()
-      eventEnd.update()
+function updateEndTime(newStartTime, oldValue, el$) {
+  let eventEnd = el$.form$.el$('event_end')
+  if (!newStartTime) {
+    defaultEndTime.value = ''
+    eventEnd.clear()
+    eventEnd.update()
+  } else {
+    const newEndTime = findDefaultEndTime(newStartTime)
+    if (defaultEndTime.value === '' || 
+      defaultEndTime.value < newEndTime || 
+      defaultEndTime.value.slice(0, 10) !== newEndTime.slice(0, 10)) {
+        defaultEndTime.value = newEndTime
+        eventEnd.clear()
+        eventEnd.update()
+    }
   }
-  
 }
 
 async function fetchUser() {
@@ -383,11 +388,6 @@ fetchUser()
               ],
             ],
           ]"
-          :rules="[
-            {
-              required: ['anytime', '!=', true]
-            }
-          ]"
          />
          <DateElement
            name="event_end"
@@ -404,6 +404,11 @@ fetchUser()
                 null,
               ],
             ],
+          ]"
+          :rules="[
+            {
+              required: ['anytime', '!=', true]
+            }
           ]"
          />
          <StaticElement
