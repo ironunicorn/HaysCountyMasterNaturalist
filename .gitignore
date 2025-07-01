@@ -2,8 +2,8 @@
 .git/**/*
 flaskapp/.venv/**/*
 flaskapp/instance/**/*
-flaskapp/VolunteerAT/__pycache__
-flaskapp/VolunteerAT/static/dist/**/*
+flaskapp/flask_app/static/dist/**/*
+flaskapp/flask_app/__pycache__/
 opportunities/.vscode/**/*
 opportunities/dist/**/*
 opportunities/node_modules/**/*

@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
-from VolunteerAT.auth import admin_required
-from VolunteerAT.db import get_db
+from flask_app.auth import admin_required
+from flask_app.db import get_db
 
 
 bp = Blueprint('users', __name__)

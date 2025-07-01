@@ -7,8 +7,8 @@ from flask import (
 from pytz import timezone
 from werkzeug.exceptions import abort
 
-from VolunteerAT.auth import editor_required
-from VolunteerAT.db import get_db
+from flask_app.auth import editor_required
+from flask_app.db import get_db
 
 
 utc = timezone('UTC')
