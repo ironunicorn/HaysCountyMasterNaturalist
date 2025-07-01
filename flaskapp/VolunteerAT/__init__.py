@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request
+from flask import Flask
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from . import auth, db, opportunities, users
 

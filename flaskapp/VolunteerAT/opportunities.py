@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from flask import (
-    Blueprint, g, redirect, render_template, request, url_for
+    Blueprint, g, render_template, request
 )
 from pytz import timezone
 from werkzeug.exceptions import abort
@@ -87,7 +87,9 @@ def convert_to_local_time(opp, day=None, original_hour=None):
     if opp.get('expiration_date'):
         opp['expiration_date'] = opp['expiration_date'].astimezone(central).strftime('%Y-%m-%d %H:%M')
     if opp.get('event_start'):
-        event_length = opp['event_end'] - opp['event_start']
+        event_length = timedelta(seconds=3600)
+        if opp.get('event_end'):
+            event_length = opp['event_end'] - opp['event_start']
         if day:
             opp['event_start'] = day
         localized_start = opp['event_start'].astimezone(central)
@@ -122,7 +124,6 @@ def find_recurring(opportunities):
             # adds opp every 7 days for 3 months out (accounting for expiration_date).
             day = opp['event_start']
             original_hour = day.astimezone(central).hour
-            event_length = opp['event_end'] - opp['event_start']
             while day < fortyfive_days_ago:
                 day += timedelta(days=7)
             while day <= three_months_out and (not expiration_date or day <= expiration_date):
@@ -302,15 +303,6 @@ def update(id):
         return { 'error': str(e) }, 400
 
     return { 'success': True }
-
-#
-# @bp.route('/<int:id>/delete', methods=('POST',))
-# @editor_required
-# def delete(id):
-#     get_opportunity(id)
-#     with get_db() as cursor:
-#         cursor.execute('DELETE FROM post WHERE id = ?', (id,))
-#     return redirect(url_for('blog.index'))
 
 
 @bp.route('/api/opportunities/<int:id>')
