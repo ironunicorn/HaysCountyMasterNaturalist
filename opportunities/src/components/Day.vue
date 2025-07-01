@@ -31,8 +31,7 @@ function openModal(opp) {
       </div>
       <h2>{{ opp.title }}</h2>
       <div style="font-weight:bold;">{{ formatDateDisplay(opp) }}</div>
-      <div><i>{{ opp.anywhere ? 'Anywhere' : opp.location }}</i></div>
-      <div v-if="opp.city"><i>{{ opp.city }}</i></div>
+      <div><i>{{ opp.anywhere ? 'Anywhere' : opp.location }}</i> <span v-if="opp.city"><i>{{ opp.city === "Other" ? '' : opp.city }}</i></span></div>  
       <div v-if="opp.category === 'AT'"><b>AT: {{ opp.project_id }}</b></div>
       <div v-else-if="opp.category === 'EV'"><b>{{ opp.project_id }}</b></div>
       <div v-else><b>{{ opp.project_id }} {{opp.category}}</b> ({{ getCategory(opp.category) }})</div>

@@ -19,8 +19,8 @@ const emit = defineEmits(['closeModal'])
         <br/>
         <div><span style="font-weight:bold;">When:</span> {{ formatModalDateDisplay(opp) }}</div>
         <div><span style="font-weight:bold;">Where:</span> {{ props.opp.anywhere ? 'Anywhere' : props.opp.location }}</div>
-        <div v-if="props.opp.city">{{ props.opp.city }}</div>
-        <div><span style="font-weight:bold;">VMS Code:</span> 
+        <div v-if="props.opp.city">{{ props.opp.city === "Other" ? '' : props.opp.city }}</div>
+        <div><span style="font-weight:bold;">VMS Code: </span> 
         <span v-if="props.opp.category === 'AT'"><b>AT: {{ props.opp.project_id }}</b></span>
         <span v-else><b>{{ props.opp.project_id }} {{props.opp.category}}</b> ({{ getCategory(props.opp.category) }})</span></div>
         <br/>
