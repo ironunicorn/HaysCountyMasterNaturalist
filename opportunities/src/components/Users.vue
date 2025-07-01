@@ -5,10 +5,26 @@ import { ref } from 'vue'
 import { DOMAIN } from '../utils.js'
 
 const users = ref([])
+const working = ref(false)
 
 async function fetchUsers() {
   const res = await axios.get(DOMAIN.concat(`/api/users`))
   users.value = await res.data
+}
+
+async function updateUser(user, privilege) {
+  working.value = true
+  user[privilege] = user[privilege] === 1 ? 0 : 1
+  const res = await axios.post(DOMAIN.concat(`/api/users/${user.id}`), {
+    admin: user.admin === 1, 
+    project_coordinator: user.project_coordinator === 1,
+  }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  let success = await res.data
+  working.value = false
 }
 
 fetchUsers()
@@ -25,13 +41,15 @@ fetchUsers()
     <h2 class="user-email">{{ user.email }}</h2> 
     Admin <input
       type="checkbox"
-      id="admin: {{ user.id }}"
-      value="{{ user.admin === 1 }}" />
+      :checked="user.admin"
+      :disabled="working"
+      @change="updateUser(user, 'admin')" />
     <br/>
     Project Coordinator <input
       type="checkbox"
-      id="project_coordinator: {{ user.id }}"
-      value="{{ user.project_coordinator === 1 }}" />
+      :checked="user.project_coordinator" 
+      :disabled="working"
+      @change="updateUser(user, 'project_coordinator')"/>
   </div>
 </template>
 
