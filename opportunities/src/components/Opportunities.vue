@@ -12,8 +12,8 @@ import { getCategory, DOMAIN } from '../utils.js'
 
 const ANY_TIME = 'Any Time'
 const opportunities = ref([])
-const categories = ref(new Set())
-const cities = ref(new Set())
+const categories = ref([])
+const cities = ref([])
 const searchTitleAndBody = ref(null)
 const selectedCategories = ref(new Set())
 const selectedCities = ref(new Set())
@@ -147,8 +147,8 @@ async function fetchOpportunities() {
   const res = await axios.get(DOMAIN.concat(`/api/opportunities`))
   opportunities.value = await res.data
 
-  cities.value = new Set(opportunities.value.map((opp) => opp.city || 'Anywhere'))
-  categories.value = new Set(opportunities.value.map((opp) => getCategory(opp.category)))
+  cities.value = Array.from(new Set(opportunities.value.map((opp) => opp.city || 'Anywhere'))).sort()
+  categories.value = Array.from(new Set(opportunities.value.map((opp) => getCategory(opp.category)))).sort()
   orderByDate(opportunities.value)
   filterOpportunities()
   getAllDays()
